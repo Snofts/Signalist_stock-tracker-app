@@ -4,9 +4,26 @@ import SearchCommand from '@/components/SearchCommand';
 import { getWatchlistWithData } from '@/lib/actions/watchlist.actions';
 import { WatchlistTable } from '@/components/WatchlistTable';
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
 const Watchlist = async () => {
-  const watchlist = await getWatchlistWithData();
-  const initialStocks = await searchStocks();
+  let watchlist = [];
+  let initialStocks = [];
+
+  try {
+    watchlist = await getWatchlistWithData();
+    initialStocks = await searchStocks();
+  } catch (error) {
+    console.error("Error loading watchlist:", error);
+
+    return (
+      <section className="p-6">
+        <p>Unable to load watchlist right now.</p>
+      </section>
+    );
+  }
 
   // Empty state
   if (watchlist.length === 0) {
@@ -19,6 +36,7 @@ const Watchlist = async () => {
             Start building your watchlist by searching for stocks and clicking the star icon to add them.
           </p>
         </div>
+
         <SearchCommand initialStocks={initialStocks} />
       </section>
     );
@@ -29,8 +47,10 @@ const Watchlist = async () => {
       <div className="flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <h2 className="watchlist-title">Watchlist</h2>
+
           <SearchCommand initialStocks={initialStocks} />
         </div>
+
         <WatchlistTable watchlist={watchlist} />
       </div>
     </section>

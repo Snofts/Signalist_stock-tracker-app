@@ -17,7 +17,6 @@ import {signOut} from "@/lib/actions/auth.actions";
 
 const UserDropdown = ({ user, initialStocks }: {user: User, initialStocks: StockWithWatchlistStatus[]}) => {
     const router = useRouter();
-    console.log("UserDropdown render with user:", user);
 
     const handleSignOut = async () => {
         await signOut();
